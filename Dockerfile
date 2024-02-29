@@ -1,80 +1,108 @@
-# syntax = docker/dockerfile:1.4
+# syntax=docker/dockerfile:1.4
 
-ARG NODE_VERSION=20.10.0-alpine3.18
+ARG NODE_VERSION=20.11.1-bullseye
 
-FROM node:${NODE_VERSION} as build
+# Build assets and compile TypeScript
 
-RUN apk add git linux-headers build-base
+FROM --platform=$BUILDPLATFORM node:${NODE_VERSION} AS native-builder
 
-ENV PYTHONUNBUFFERED=1
-RUN apk add --update python3 && ln -sf python3 /usr/bin/python
-RUN python3 -m ensurepip
-RUN pip3 install --no-cache --upgrade pip setuptools
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+  --mount=type=cache,target=/var/lib/apt,sharing=locked \
+  rm -f /etc/apt/apt.conf.d/docker-clean \
+  ; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache \
+  && apt-get update \
+  && apt-get install -yqq --no-install-recommends \
+  build-essential
 
 RUN corepack enable
 
-WORKDIR /sharkey
+WORKDIR /cutiekey
+
+COPY --link ["pnpm-lock.yaml", "pnpm-workspace.yaml", "package.json", "./"]
+COPY --link ["scripts", "./scripts"]
+COPY --link ["packages/backend/package.json", "./packages/backend/"]
+COPY --link ["packages/frontend/package.json", "./packages/frontend/"]
+COPY --link ["packages/sw/package.json", "./packages/sw/"]
+COPY --link ["packages/misskey-js/package.json", "./packages/misskey-js/"]
+COPY --link ["packages/megalodon/package.json", "./packages/megalodon/"]
+COPY --link ["packages/misskey-reversi/package.json", "./packages/misskey-reversi/"]
+COPY --link ["packages/misskey-bubble-game/package.json", "./packages/misskey-bubble-game/"]
+
+ARG NODE_ENV=production
+
+RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
+  pnpm install --aggregate-output --frozen-lockfile
 
 COPY --link . ./
 
-RUN git submodule update --init --recursive
-RUN pnpm config set fetch-retries 5
-RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
-	pnpm i --frozen-lockfile --aggregate-output
-RUN pnpm build
-RUN node scripts/trim-deps.mjs
-RUN mv packages/frontend/assets sharkey-assets
-RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
-	pnpm prune
-RUN rm -r node_modules packages/frontend packages/sw
-RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
-	pnpm i --prod --frozen-lockfile --aggregate-output
-RUN rm -rf .git
+RUN git submodule update --init
+RUN pnpm run build
+RUN rm -rf .git/
 
-FROM node:${NODE_VERSION}
+# Build native dependencies for the target platform
 
-ARG UID="991"
+FROM --platform=$TARGETPLATFORM node:${NODE_VERSION} AS target-builder
+
+RUN apt-get update \
+  && apt-get install -yqq --no-install-recommends \
+  build-essential
+
+RUN corepack enable
+
+WORKDIR /cutiekey
+
+COPY --link ["pnpm-lock.yaml", "pnpm-workspace.yaml", "package.json", "./"]
+COPY --link ["scripts", "./scripts"]
+COPY --link ["packages/backend/package.json", "./packages/backend/"]
+COPY --link ["packages/misskey-js/package.json", "./packages/misskey-js/"]
+COPY --link ["packages/megalodon/package.json", "./packages/megalodon/"]
+COPY --link ["packages/misskey-reversi/package.json", "./packages/misskey-reversi/"]
+COPY --link ["packages/misskey-bubble-game/package.json", "./packages/misskey-bubble-game/"]
+
+ARG NODE_ENV=production
+
+RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
+  pnpm install --aggregate-output --frozen-lockfile
+
+FROM --platform=$TARGETPLATFORM node:${NODE_VERSION}-slim AS runner
+
 ARG GID="991"
+ARG UID="991"
 
-RUN apk add ffmpeg tini jemalloc \
-	&& corepack enable \
-	&& addgroup -g "${GID}" sharkey \
-	&& adduser -D -u "${UID}" -G sharkey -h /sharkey sharkey \
-	&& find / -type d -path /sys -prune -o -type d -path /proc -prune -o -type f -perm /u+s -exec chmod u-s {} \; \
-	&& find / -type d -path /sys -prune -o -type d -path /proc -prune -o -type f -perm /g+s -exec chmod g-s {} \;
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+  ffmpeg tini curl libjemalloc-dev libjemalloc2 \
+  && ln -s /usr/lib/$(uname -m)-linux-gnu/libjemalloc2.so.2 /usr/local/lib/libjemalloc.so \
+  && corepack enable \
+  && groupadd -g "${GID}" cutiekey \
+  && useradd -l -u "${UID}" -g "${GID}" -m -d /cutiekey cutiekey \
+  && find / -type d -path /sys -prune -o -type d -path /proc -prune -o -type f -perm /u+s -ignore_readdir_race -exec chmod u-s {} \; \
+  && find / -type d -path /sys -prune -o -type d -path /proc -prune -o -type f -perm /g+s -ignore_readdir_race -exec chmod g-s {} \; \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists
 
-USER sharkey
-WORKDIR /sharkey
+USER cutiekey
+WORKDIR /cutiekey
 
-COPY --chown=sharkey:sharkey --from=build /sharkey/node_modules ./node_modules
-COPY --chown=sharkey:sharkey --from=build /sharkey/packages/backend/node_modules ./packages/backend/node_modules
-COPY --chown=sharkey:sharkey --from=build /sharkey/packages/misskey-js/node_modules ./packages/misskey-js/node_modules
-COPY --chown=sharkey:sharkey --from=build /sharkey/packages/misskey-reversi/node_modules ./packages/misskey-reversi/node_modules
-COPY --chown=sharkey:sharkey --from=build /sharkey/packages/misskey-bubble-game/node_modules ./packages/misskey-bubble-game/node_modules
-COPY --chown=sharkey:sharkey --from=build /sharkey/packages/megalodon/node_modules ./packages/megalodon/node_modules
-COPY --chown=sharkey:sharkey --from=build /sharkey/built ./built
-COPY --chown=sharkey:sharkey --from=build /sharkey/packages/misskey-js/built ./packages/misskey-js/built
-COPY --chown=sharkey:sharkey --from=build /sharkey/packages/misskey-reversi/built ./packages/misskey-reversi/built
-COPY --chown=sharkey:sharkey --from=build /sharkey/packages/misskey-bubble-game/built ./packages/misskey-bubble-game/built
-COPY --chown=sharkey:sharkey --from=build /sharkey/packages/backend/built ./packages/backend/built
-COPY --chown=sharkey:sharkey --from=build /sharkey/packages/megalodon/lib ./packages/megalodon/lib
-COPY --chown=sharkey:sharkey --from=build /sharkey/fluent-emojis ./fluent-emojis
-COPY --chown=sharkey:sharkey --from=build /sharkey/tossface-emojis/dist ./tossface-emojis/dist
-COPY --chown=sharkey:sharkey --from=build /sharkey/sharkey-assets ./packages/frontend/assets
+COPY --chown=cutiekey:cutiekey --from=target-builder /cutiekey/node_modules ./node_modules
+COPY --chown=cutiekey:cutiekey --from=target-builder /cutiekey/packages/backend/node_modules ./packages/backend/node_modules
+COPY --chown=cutiekey:cutiekey --from=target-builder /cutiekey/packages/misskey-js/node_modules ./packages/misskey-js/node_modules
+COPY --chown=cutiekey:cutiekey --from=target-builder /cutiekey/packages/megalodon/node_modules ./packages/megalodon/node_modules
+COPY --chown=cutiekey:cutiekey --from=target-builder /cutiekey/packages/misskey-reversi/node_modules ./packages/misskey-reversi/node_modules
+COPY --chown=cutiekey:cutiekey --from=target-builder /cutiekey/packages/misskey-bubble-game/node_modules ./packages/misskey-bubble-game/node_modules
+COPY --chown=cutiekey:cutiekey --from=native-builder /cutiekey/built ./built
+COPY --chown=cutiekey:cutiekey --from=native-builder /cutiekey/packages/misskey-js/built ./packages/misskey-js/built
+COPY --chown=cutiekey:cutiekey --from=native-builder /cutiekey/packages/megalodon/lib ./packages/megalodon/lib
+COPY --chown=cutiekey:cutiekey --from=native-builder /cutiekey/packages/misskey-reversi/built ./packages/misskey-reversi/built
+COPY --chown=cutiekey:cutiekey --from=native-builder /cutiekey/packages/misskey-bubble-game/built ./packages/misskey-bubble-game/built
+COPY --chown=cutiekey:cutiekey --from=native-builder /cutiekey/packages/backend/built ./packages/backend/built
+COPY --chown=cutiekey:cutiekey --from=native-builder /cutiekey/fluent-emojis /cutiekey/fluent-emojis
+COPY --chown=cutiekey:cutiekey --from=native-builder /cutiekey/tossface-emojis /cutiekey/tossface-emojis
+COPY --chown=cutiekey:cutiekey . ./
 
-COPY --chown=sharkey:sharkey package.json ./package.json
-COPY --chown=sharkey:sharkey pnpm-workspace.yaml ./pnpm-workspace.yaml
-COPY --chown=sharkey:sharkey packages/backend/package.json ./packages/backend/package.json
-COPY --chown=sharkey:sharkey packages/backend/check_connect.js ./packages/backend/check_connect.js
-COPY --chown=sharkey:sharkey packages/backend/ormconfig.js ./packages/backend/ormconfig.js
-COPY --chown=sharkey:sharkey packages/backend/migration ./packages/backend/migration
-COPY --chown=sharkey:sharkey packages/backend/assets ./packages/backend/assets
-COPY --chown=sharkey:sharkey packages/megalodon/package.json ./packages/megalodon/package.json
-COPY --chown=sharkey:sharkey packages/misskey-js/package.json ./packages/misskey-js/package.json
-COPY --chown=sharkey:sharkey packages/misskey-reversi/package.json ./packages/misskey-reversi/package.json
-COPY --chown=sharkey:sharkey packages/misskey-bubble-game/package.json ./packages/misskey-bubble-game/package.json
-
-ENV LD_PRELOAD=/usr/lib/libjemalloc.so.2
+ENV LD_PRELOAD=/usr/local/lib/libjemalloc.so
 ENV NODE_ENV=production
-ENTRYPOINT ["/sbin/tini", "--"]
+
+HEALTHCHECK --interval=5s --retries=20 CMD ["/bin/bash", "/cutiekey/healthcheck.sh"]
+ENTRYPOINT ["/usr/bin/tini", "--"]
 CMD ["pnpm", "run", "migrateandstart"]

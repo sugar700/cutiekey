@@ -1,10 +1,9 @@
 {
-	"name": "sharkey",
-	"version": "2024.3.2-devel",
-	"codename": "shonk",
+	"name": "cutiekey",
+	"version": "2024.2.0-beta.12",
 	"repository": {
 		"type": "git",
-		"url": "https://activitypub.software/TransFem-org/Sharkey.git"
+		"url": "https://github.com/cutiekey/cutiekey.git"
 	},
 	"packageManager": "pnpm@8.15.4",
 	"workspaces": [

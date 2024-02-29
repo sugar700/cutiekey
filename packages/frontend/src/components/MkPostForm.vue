@@ -745,7 +745,7 @@ async function post(ev?: MouseEvent) {
 			visibility.value = 'home';
 		}
 	}
-	
+
 	if (defaultStore.state.warnMissingAltText) {
 		const filesData = toRaw(files.value);
 
@@ -765,7 +765,7 @@ async function post(ev?: MouseEvent) {
 			});
 
 			if (canceled) return;
-			if (result === 'cancel') return;	
+			if (result === 'cancel') return;
 		}
 	}
 
@@ -842,7 +842,7 @@ async function post(ev?: MouseEvent) {
 
 			const text = postData.text ?? '';
 			const lowerCase = text.toLowerCase();
-			if ((lowerCase.includes('love') || lowerCase.includes('❤')) && lowerCase.includes('sharkey')) {
+			if ((lowerCase.includes('love') || lowerCase.includes('❤')) && lowerCase.includes('cutiekey')) {
 				claimAchievement('iLoveMisskey');
 			}
 			if ([

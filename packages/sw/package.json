@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "pnpm run build:prod",
+    "build": "node ./build.js",
     "build:prod": "cross-env NODE_ENV=production node ./build.js",
     "lint": "yarn lint:eslint && yarn lint:types",
     "lint:eslint": "eslint --ext \".js,.jsx,.ts,.tsx\" \"./src/**/*\"",
@@ -11,6 +11,7 @@
     "watch": "nodemon -e json --exec \"node ./build.js watch\" -w \"../../package.json\""
   },
   "dependencies": {
+    "esbuild": "^0.20.2",
     "idb-keyval": "^6.2.1",
     "misskey-js": "workspace:*"
   },
@@ -20,7 +21,6 @@
     "@typescript-eslint/eslint-plugin": "7.7.0",
     "@typescript-eslint/parser": "^7.7.0",
     "cross-env": "^7.0.3",
-    "esbuild": "^0.20.2",
     "eslint": "^8.57.0",
     "eslint-plugin-import": "^2.29.1",
     "nodemon": "^3.1.0",

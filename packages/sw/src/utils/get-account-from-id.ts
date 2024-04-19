@@ -1,15 +1,13 @@
-/*
- * SPDX-FileCopyrightText: syuilo and misskey-project
- * SPDX-License-Identifier: AGPL-3.0-only
- */
+import { get } from 'idb-keyval'
 
-import { get } from 'idb-keyval';
+export async function getAccountFromId(id: string) {
+  const accounts = await get<{ id: string; token: string }[]>('accounts')
 
-export async function getAccountFromId(id: string): Promise<{ token: string; id: string } | void> {
-	const accounts = await get<{ token: string; id: string }[]>('accounts');
-	if (!accounts) {
-		console.log('Accounts are not recorded');
-		return;
-	}
-	return accounts.find(e => e.id === id);
+  if (!accounts) {
+    console.warn('[SW] Accounts are not being recorded')
+
+    return
+  }
+
+  return accounts.find(e => e.id === id)
 }

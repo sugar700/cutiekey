@@ -1,50 +1,48 @@
-/*
- * SPDX-FileCopyrightText: syuilo and misskey-project
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
-/*
- * Language manager for SW
- */
-import { get, set } from 'idb-keyval';
-import { I18n, type Locale } from '@/utils/i18n.js';
+import { I18n, Locale } from '@/utils/i18n'
+import { get, set } from 'idb-keyval'
 
 class SwLang {
-	public cacheName = `mk-cache-${_VERSION_}`;
+  public cacheName = `ck-cache-${_VERSION_}`
+  public i18n: Promise<I18n<Locale>> | null = null
+  public lang = get<string>('lang').then(async prelang => {
+    if (!prelang) {
+      return 'en-US'
+    }
 
-	public lang: Promise<string> = get('lang').then(async prelang => {
-		if (!prelang) return 'en-US';
-		return prelang;
-	});
+    return prelang
+  })
 
-	public setLang(newLang: string): Promise<I18n<Locale>> {
-		this.lang = Promise.resolve(newLang);
-		set('lang', newLang);
-		return this.fetchLocale();
-	}
+  public fetchLocale() {
+    return this.i18n = this._fetch()
+  }
 
-	public i18n: Promise<I18n> | null = null;
+  public setLang(newLang: string) {
+    this.lang = Promise.resolve(newLang)
 
-	public fetchLocale(): Promise<I18n<Locale>> {
-		return (this.i18n = this._fetch());
-	}
+    set('lang', newLang)
 
-	private async _fetch(): Promise<I18n<Locale>> {
-		// Service Workerは何度も起動しそのたびにlocaleを読み込むので、CacheStorageを使う
-		const localeUrl = `/assets/locales/${await this.lang}.${_VERSION_}.json`;
-		let localeRes = await caches.match(localeUrl);
+    return this.fetchLocale()
+  }
 
-		// _DEV_がtrueの場合は常に最新化
-		if (!localeRes || _DEV_) {
-			localeRes = await fetch(localeUrl);
-			const clone = localeRes.clone();
-			if (!clone.clone().ok) throw new Error('locale fetching error');
+  private async _fetch() {
+    const localeUrl = `/assets/locales/${await this.lang}.${_VERSION_}.json`
 
-			caches.open(this.cacheName).then(cache => cache.put(localeUrl, clone));
-		}
+    let localeRes = await caches.match(localeUrl)
 
-		return new I18n<Locale>(await localeRes.json());
-	}
+    if (!localeRes || _DEV_) {
+      localeRes = await fetch(localeUrl)
+
+      const clone = localeRes.clone()
+
+      if (!clone.clone().ok) {
+        throw new Error('error fetching the locale')
+      }
+
+      caches.open(this.cacheName).then(cache => cache.put(localeUrl, clone))
+    }
+
+    return new I18n<Locale>(await localeRes.json())
+  }
 }
 
-export const swLang = new SwLang();
+export const swLang = new SwLang()

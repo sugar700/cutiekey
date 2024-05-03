@@ -51,7 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<FormLink to="https://github.com/cutiekey/cutiekey" external>
 							<template #icon><i class="ph-code ph-bold ph-lg"></i></template>
 							{{ i18n.ts._aboutMisskey.source }} ({{ i18n.ts._aboutMisskey.original_cutiekey }})
-							<template #suffix>GitLab</template>
+							<template #suffix>GitHub</template>
 						</FormLink>
 					</div>
 				</FormSection>

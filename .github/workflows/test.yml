@@ -1,0 +1,41 @@
+name: Test
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        ports:
+          - 54312:5432
+        env:
+          POSTGRES_HOST_AUTH_METHOD: trust
+      redis:
+        image: redis:7
+        ports:
+          - 56312:6379
+    steps:
+      - uses: actions/checkout@v4.1.1
+        with:
+          submodules: true
+      - name: Use Node.js
+        uses: actions/setup-node@v4.0.2
+        with:
+          node-version-file: .node-version
+      - run: corepack enable
+      - name: Get pnpm store directory
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-pnpm-store-
+      - run: pnpm install --frozen-lockfile
+      - run: cp .github/cutiekey/test.yml .config/default.yml
+      - run: pnpm run build
+      - run: pnpm run migrate

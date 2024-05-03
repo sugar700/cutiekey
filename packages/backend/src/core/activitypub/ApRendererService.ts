@@ -280,7 +280,7 @@ export class ApRendererService {
 			if (note && note.userHost) {
 				const instance = await this.instancesRepository.findOneBy({ host: note.userHost });
         
-        if(instance && ['mastodon', 'akkoma', 'pleroma'].includes(instance.softwareName)) {
+        if (instance && ['mastodon', 'akkoma', 'pleroma'].includes(instance.softwareName)) {
           isMastodon = true;
         }
 			}

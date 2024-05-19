@@ -5341,9 +5341,9 @@ export interface Locale extends ILocale {
              */
             "description": string;
             /**
-             * Reactions can be added by clicking the '+' button on the note. Try reacting to this sample note!
+             * Reactions can be added by clicking the '{reaction}' button on the note. Try reacting to this sample note!
              */
-            "letsTryReacting": string;
+            "letsTryReacting": ParameterizedString<"reaction">;
             /**
              * Add a reaction to proceed.
              */
@@ -5353,9 +5353,9 @@ export interface Locale extends ILocale {
              */
             "reactNotification": string;
             /**
-             * You can undo a reaction by pressing the '-' button.
+             * You can undo a reaction by pressing the '{undo}' button.
              */
-            "reactDone": string;
+            "reactDone": ParameterizedString<"undo">;
         };
         "_timeline": {
             /**

@@ -388,6 +388,9 @@ importers:
       stringz:
         specifier: 2.1.0
         version: 2.1.0
+      syslog-pro:
+        specifier: https://github.com/misskey-dev/SyslogPro.git
+        version: '@zeit/syslog-pro@https://codeload.github.com/misskey-dev/SyslogPro/tar.gz/f3f56dcc70ac845a535e4d1e990c6b655aba4126'
       systeminformation:
         specifier: 5.22.0
         version: 5.22.0
@@ -624,6 +627,9 @@ importers:
       '@types/sinonjs__fake-timers':
         specifier: 8.1.5
         version: 8.1.5
+      '@types/syslog-pro':
+        specifier: ^1.0.3
+        version: 1.0.3
       '@types/tinycolor2':
         specifier: 1.4.6
         version: 1.4.6
@@ -4547,6 +4553,9 @@ packages:
   '@types/statuses@2.0.4':
     resolution: {integrity: sha512-eqNDvZsCNY49OAXB0Firg/Sc2BgoWsntsLUdybGFOhAfCD6QJ2n9HXUIHGqt5qjrxmMv4wS8WLAw43ZkKcJ8Pw==}
 
+  '@types/syslog-pro@1.0.3':
+    resolution: {integrity: sha512-tI558N5Io/04ya5eO5HJRIHLLJK/2Q1y4j6Fb0POVSNgRFxfJCOZHEyNrpcagdEtw9i25Diq3NXfs1qa0yyMIw==}
+
   '@types/throttle-debounce@5.0.2':
     resolution: {integrity: sha512-pDzSNulqooSKvSNcksnV72nk8p7gRqN8As71Sp28nov1IgmPKWbOEIwAWvBME5pPTtaXJAvG3O4oc76HlQ4kqQ==}
 
@@ -4946,6 +4955,11 @@ packages:
   '@yarnpkg/libzip@2.3.0':
     resolution: {integrity: sha512-6xm38yGVIa6mKm/DUCF2zFFJhERh/QWp1ufm4cNUvxsONBmfPg8uZ9pZBdOmF6qFGr/HlT6ABBkCSx/dlEtvWg==}
     engines: {node: '>=12 <14 || 14.2 - 14.9 || >14.10.0'}
+
+  '@zeit/syslog-pro@https://codeload.github.com/misskey-dev/SyslogPro/tar.gz/f3f56dcc70ac845a535e4d1e990c6b655aba4126':
+    resolution: {tarball: https://codeload.github.com/misskey-dev/SyslogPro/tar.gz/f3f56dcc70ac845a535e4d1e990c6b655aba4126}
+    version: 0.2.9-misskey.2
+    engines: {node: '>=10.0.0'}
 
   abbrev@1.1.1:
     resolution: {integrity: sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==}
@@ -8308,6 +8322,9 @@ packages:
   mock-socket@9.3.1:
     resolution: {integrity: sha512-qxBgB7Qa2sEQgHFjj0dSigq7fX4k6Saisd5Nelwp2q8mlbAFh5dHV9JTTlF8viYJLSSWgMCZFUom8PJcMNBoJw==}
     engines: {node: '>= 8'}
+
+  moment@2.30.1:
+    resolution: {integrity: sha512-uEmtNhbDOrWPFS+hdjFCBfy9f2YoyzRpwcl+DqpC6taX21FzsTLQVbMV/W7PzNSX6x/bhC1zA3c2UQ5NzH6how==}
 
   mri@1.2.0:
     resolution: {integrity: sha512-tzzskb3bG8LvYGFF/mDTpq3jpI6Q9wc3LEmBaghu+DdCssd1FakN7Bc0hVNmEyGq1bq3RgfkCb3cmQLpNPOroA==}
@@ -15454,6 +15471,8 @@ snapshots:
 
   '@types/statuses@2.0.4': {}
 
+  '@types/syslog-pro@1.0.3': {}
+
   '@types/throttle-debounce@5.0.2': {}
 
   '@types/tinycolor2@1.4.6': {}
@@ -16032,6 +16051,10 @@ snapshots:
     dependencies:
       '@types/emscripten': 1.39.7
       tslib: 1.14.1
+
+  '@zeit/syslog-pro@https://codeload.github.com/misskey-dev/SyslogPro/tar.gz/f3f56dcc70ac845a535e4d1e990c6b655aba4126':
+    dependencies:
+      moment: 2.30.1
 
   abbrev@1.1.1: {}
 
@@ -20481,6 +20504,8 @@ snapshots:
       obliterator: 2.0.4
 
   mock-socket@9.3.1: {}
+
+  moment@2.30.1: {}
 
   mri@1.2.0: {}
 

@@ -10,6 +10,7 @@ import { format as dateFormat } from 'date-fns';
 import { bindThis } from '@/decorators.js';
 import { envOption } from './env.js';
 import type { KEYWORD } from 'color-convert/conversions.js';
+import * as SyslogPro from 'syslog-pro';
 
 type Context = {
 	name: string;
@@ -23,13 +24,15 @@ export default class Logger {
 	private context: Context;
 	private parentLogger: Logger | null = null;
 	private store: boolean;
+  private syslogClient: SyslogPro.RFC5424 | null;
 
-	constructor(context: string, color?: KEYWORD, store = true) {
+	constructor(context: string, color?: KEYWORD, store = true, syslogClient: SyslogPro.RFC5424 | null = null) {
 		this.context = {
 			name: context,
 			color: color,
 		};
 		this.store = store;
+    this.syslogClient = syslogClient;
 	}
 
 	@bindThis
@@ -76,6 +79,20 @@ export default class Logger {
 			args.push(data);
 		}
 		console.log(...args);
+
+    if (store) {
+			if (this.syslogClient) {
+				const send =
+					level === 'error' ? this.syslogClient.error :
+					level === 'warning' ? this.syslogClient.warning :
+					level === 'success' ? this.syslogClient.info :
+					level === 'debug' ? this.syslogClient.info :
+					level === 'info' ? this.syslogClient.info :
+					null as never;
+
+				send.bind(this.syslogClient)(message).catch(() => {});
+			}
+		}
 	}
 
 	@bindThis

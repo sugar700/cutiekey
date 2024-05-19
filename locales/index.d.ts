@@ -5341,13 +5341,7 @@ export interface Locale extends ILocale {
              */
             "description": string;
             /**
-<<<<<<< HEAD
-             * Reactions can be added by clicking the '+' button on the note. Try reacting to this sample note!
-||||||| e0afeff24
-             * リアクションは、ノートの「＋」ボタンをクリックするとつけられます。試しにこのサンプルのノートにリアクションをつけてみてください！
-=======
-             * リアクションは、ノートの「{reaction}」ボタンをクリックするとつけられます。試しにこのサンプルのノートにリアクションをつけてみてください！
->>>>>>> upstream/develop
+             * Reactions can be added by clicking the '{reaction}' button on the note. Try reacting to this sample note!
              */
             "letsTryReacting": ParameterizedString<"reaction">;
             /**
@@ -5359,13 +5353,7 @@ export interface Locale extends ILocale {
              */
             "reactNotification": string;
             /**
-<<<<<<< HEAD
-             * You can undo a reaction by pressing the '-' button.
-||||||| e0afeff24
-             * 「ー」ボタンを押すとリアクションを取り消すことができます。
-=======
-             * 「{undo}」ボタンを押すとリアクションを取り消すことができます。
->>>>>>> upstream/develop
+             * You can undo a reaction by pressing the '{undo}' button.
              */
             "reactDone": ParameterizedString<"undo">;
         };

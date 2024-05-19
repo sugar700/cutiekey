@@ -21,7 +21,7 @@ export class LoggerService {
 	) {
     if (this.config.syslog) {
 			this.syslogClient = new SyslogPro.RFC5424({
-				applicationName: 'Misskey',
+				applicationName: 'Cutiekey',
 				timestamp: true,
 				includeStructuredData: true,
 				color: true,

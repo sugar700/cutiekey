@@ -234,11 +234,13 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 						break;
 					}
           case 'followmouse': {
+            //Make sure advanced MFM is on and that reduced motion is off
 						if (!defaultStore.state.advancedMfm || !defaultStore.state.animation) break;
+
             return h(CkFollowMouse, {
               x : token.props.args.x ?? false,
               y : token.props.args.y ?? false,
-              speed : safeParseFloat(token.props.args.speed) ?? 0.1,
+              speed : validTime(token.props.args.speed) ?? "0.1s",
               rotateByVelocity : token.props.args.rotateByVelocity ?? false
             }, genEl(token.children, scale));
 						break;

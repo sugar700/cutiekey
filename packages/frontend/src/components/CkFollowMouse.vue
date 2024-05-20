@@ -23,7 +23,7 @@ const props = defineProps({
     default: false,
   },
   speed: {
-    type: Number,
+    type: String,
     default: 0.1,
   },
   rotateByVelocity: {
@@ -47,10 +47,8 @@ const updatePosition = (e: MouseEvent) => {
     const newX = e.clientX - containerRect.left;
     const newY = e.clientY - containerRect.top;
 
-    // let transform = `translate(${props.x ? newX : 0}px, ${props.y ? newY : 0}px)`;
     let transform = `translate(calc(${props.x ? newX : 0}px - 50%), calc(${props.y ? newY : 0}px - 50%))`;
 
-    // translate(-50%, -50%); calc( - 50%)
     if (props.rotateByVelocity) {
       const deltaX = newX - lastX;
       const deltaY = newY - lastY;
@@ -60,7 +58,7 @@ const updatePosition = (e: MouseEvent) => {
     }
 
     el.value.style.transform = transform;
-    el.value.style.transition = `transform ${props.speed}s`;
+    el.value.style.transition = `transform ${props.speed}`;
     el.value.style.transformOrigin = 'center center';
     lastX = newX;
     lastY = newY;

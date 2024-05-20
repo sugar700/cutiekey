@@ -237,12 +237,20 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
             //Make sure advanced MFM is on and that reduced motion is off
 						if (!defaultStore.state.advancedMfm || !defaultStore.state.animation) break;
 
-            return h(CkFollowMouse, {
-              x : token.props.args.x ?? false,
-              y : token.props.args.y ?? false,
-              speed : validTime(token.props.args.speed) ?? "0.1s",
-              rotateByVelocity : token.props.args.rotateByVelocity ?? false
-            }, genEl(token.children, scale));
+            let x = (!!token.props.args.x) ?? false
+            let y = (!!token.props.args.y) ?? false
+
+            if (!x && !y) {
+              x = true;
+              y = true;
+            }
+
+						return h(CkFollowMouse, {
+							x : x,
+							y : y,
+							speed : validTime(token.props.args.speed) ?? "0.1s",
+							rotateByVelocity : (!!token.props.args.rotateByVelocity) ?? false
+						}, genEl(token.children, scale));
 						break;
 					}
 					case 'position': {

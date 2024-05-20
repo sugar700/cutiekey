@@ -85,6 +85,11 @@ type Source = {
 	deliverJobMaxAttempts?: number;
 	inboxJobMaxAttempts?: number;
 
+  syslog?: {
+    host: string;
+    port: number;
+  };
+
 	mediaProxy?: string;
 	proxyRemoteFiles?: boolean;
 	videoThumbnailGenerator?: string;
@@ -153,6 +158,10 @@ export type Config = {
 	customMOTD: string[] | undefined;
 	signToActivityPubGet: boolean;
 	checkActivityPubGetSignature: boolean | undefined;
+  syslog?: {
+    host: string;
+    port: number;
+  };
 
 	version: string;
 	publishTarballInsteadOfProvideRepositoryUrl: boolean;

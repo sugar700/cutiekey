@@ -186,5 +186,5 @@ export const MFM_PARAMS: Record<typeof MFM_TAGS[number], string[]> = {
 	rotate: ['deg='],
 	ruby: [],
 	unixtime: [],
-  followmouse: ['x', 'y', 'speed='],
+  followmouse: ['x', 'y', 'rotateByVelocity', 'speed='],
 };

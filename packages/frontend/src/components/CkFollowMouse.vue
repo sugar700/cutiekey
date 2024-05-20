@@ -1,6 +1,6 @@
 <template>
   <span :class="$style.root" ref="container">
-    <span ref="el" style="position: absolute;">
+    <span ref="el" :class="$style.inner" style="position: absolute;">
       <slot></slot>
     </span>
   </span>
@@ -26,7 +26,19 @@ const props = defineProps({
     type: Number,
     default: 0.1,
   },
+  rotateByVelocity: {
+    type: Boolean,
+    default: true,
+  },
 });
+
+let lastX = 0;
+let lastY = 0;
+let oldAngle = 0;
+
+function lerp( a, b, alpha) {
+ return a + alpha * (b - a)
+}
 
 const updatePosition = (e: MouseEvent) => {
   if (el.value && container.value) {
@@ -34,8 +46,24 @@ const updatePosition = (e: MouseEvent) => {
 
     const newX = e.clientX - containerRect.left;
     const newY = e.clientY - containerRect.top;
-    el.value.style.transform = `translate(${props.x ? newX : 0}px, ${props.y ? newY : 0}px)`;
-    el.value.style.transition = `transform ${props.speed}s`
+
+    // let transform = `translate(${props.x ? newX : 0}px, ${props.y ? newY : 0}px)`;
+    let transform = `translate(calc(${props.x ? newX : 0}px - 50%), calc(${props.y ? newY : 0}px - 50%))`;
+
+    // translate(-50%, -50%); calc( - 50%)
+    if (props.rotateByVelocity) {
+      const deltaX = newX - lastX;
+      const deltaY = newY - lastY;
+      const angle = lerp(oldAngle, Math.atan2(deltaY, deltaX) * (180 / Math.PI), 0.1);
+      transform += ` rotate(${angle}deg)`;
+      oldAngle = angle;
+    }
+
+    el.value.style.transform = transform;
+    el.value.style.transition = `transform ${props.speed}s`;
+    el.value.style.transformOrigin = 'center center';
+    lastX = newX;
+    lastY = newY;
   }
 };
 
@@ -52,5 +80,9 @@ onUnmounted(() => {
 .root {
   position: relative;
   display: inline-block;
+}
+
+.inner {
+  transform-origin: center center;
 }
 </style>

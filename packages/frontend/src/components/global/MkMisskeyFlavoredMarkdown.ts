@@ -234,11 +234,12 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 						break;
 					}
           case 'followmouse': {
-						if (!defaultStore.state.advancedMfm) break;
+						if (!defaultStore.state.advancedMfm || !defaultStore.state.animation) break;
             return h(CkFollowMouse, {
               x : token.props.args.x ?? false,
               y : token.props.args.y ?? false,
-              speed : token.props.args.speed ?? 0.1
+              speed : safeParseFloat(token.props.args.speed) ?? 0.1,
+              rotateByVelocity : token.props.args.rotateByVelocity ?? false
             }, genEl(token.children, scale));
 						break;
 					}

@@ -12,7 +12,6 @@ import { onMounted, onUnmounted, ref, shallowRef } from 'vue';
 const el = shallowRef<HTMLElement>();
 const container = shallowRef<HTMLElement>();
 
-// Define props
 const props = defineProps({
   x: {
     type: Boolean,
@@ -20,7 +19,7 @@ const props = defineProps({
   },
   y: {
     type: Boolean,
-    default: false,
+    default: true,
   },
   speed: {
     type: String,
@@ -59,7 +58,6 @@ const updatePosition = (e: MouseEvent) => {
 
     el.value.style.transform = transform;
     el.value.style.transition = `transform ${props.speed}`;
-    el.value.style.transformOrigin = 'center center';
     lastX = newX;
     lastY = newY;
   }

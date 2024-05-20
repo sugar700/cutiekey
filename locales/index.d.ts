@@ -9611,7 +9611,7 @@ export interface Locale extends ILocale {
     };
     "_mfm": {
         /**
-         * This is a cutiekey feature meaning it wont display properly on most other fedi softwares
+         * This is a Cutiekey feature meaning it wont display properly on most other fedi softwares
          */
         "cutiekeyWontFederateWarning": string;
         /**

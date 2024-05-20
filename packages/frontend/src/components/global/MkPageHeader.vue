@@ -150,6 +150,20 @@ onUnmounted(() => {
 	backdrop-filter: var(--blur, blur(15px));
 	border-bottom: solid 0.5px var(--divider);
 	width: 100%;
+  overflow: hidden; /* Ensures the pseudo-element doesn't overflow */
+}
+
+.root::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/static-assets/acrylic_noise.svg');
+  opacity: 0.2;
+  pointer-events: none; /* Ensures that the pseudo-element doesn't interfere with user interactions */
+  mix-blend-mode: luminosity;
 }
 
 .upper,

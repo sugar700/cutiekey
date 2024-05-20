@@ -227,6 +227,19 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 						}
 						return h(MkSparkle, {}, genEl(token.children, scale));
 					}
+          case "fade": {
+            //Dont run with reduced motion on
+            if (!defaultStore.state.animation) break;
+
+            const direction = token.props.args.out
+              ? "alternate-reverse"
+              : "alternate";
+            const speed = validTime(token.props.args.speed) ?? "1.5s";
+            const delay = validTime(token.props.args.delay) ?? "0s";
+            const loop = safeParseFloat(token.props.args.loop) ?? "infinite";
+            style = `animation: mfm-fade ${speed} ${delay} linear ${loop}; animation-direction: ${direction};`;
+            break;
+          }
 					case 'rotate': {
 						const degrees = safeParseFloat(token.props.args.deg) ?? 90;
 						style = `transform: rotate(${degrees}deg); transform-origin: center center;`;

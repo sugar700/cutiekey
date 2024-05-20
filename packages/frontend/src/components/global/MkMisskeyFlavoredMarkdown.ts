@@ -239,6 +239,22 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 						style = `transform: translateX(${x}em) translateY(${y}em);`;
 						break;
 					}
+          case "crop": {
+            const top = Number.parseFloat(
+              (token.props.args.top ?? "0").toString(),
+            );
+            const right = Number.parseFloat(
+              (token.props.args.right ?? "0").toString(),
+            );
+            const bottom = Number.parseFloat(
+              (token.props.args.bottom ?? "0").toString(),
+            );
+            const left = Number.parseFloat(
+              (token.props.args.left ?? "0").toString(),
+            );
+            style = `clip-path: inset(${top}% ${right}% ${bottom}% ${left}%);`;
+            break;
+          }
 					case 'scale': {
 						if (!defaultStore.state.advancedMfm) {
 							style = '';

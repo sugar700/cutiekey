@@ -304,6 +304,16 @@
 						</div>
 					</div>
 				</div>
+        <div class="section _block">
+					<div class="title">{{ i18n.ts._mfm.crop }}</div>
+					<div class="content">
+						<p>{{ i18n.ts._mfm.cropDescription }}</p>
+						<div class="preview">
+							<Mfm :text="preview_crop" />
+							<MkTextarea v-model="preview_crop"><span>MFM</span></MkTextarea>
+						</div>
+					</div>
+				</div>
 				<div class="section _block">
 					<div class="title">{{ i18n.ts._mfm.position }}</div>
 					<div class="content">
@@ -432,6 +442,9 @@ const preview_rotate = ref(
 	"$[rotate 🍮]\n$[rotate.deg=45 🍮]\n$[rotate.x,deg=45 Hello, world!]",
 );
 const preview_position = ref("$[position.y=-1 🍮]\n$[position.x=-1 🍮]");
+const preview_crop = ref(
+	"$[crop.top=50 🍮] $[crop.right=50 🍮] $[crop.bottom=50 🍮] $[crop.left=50 🍮]",
+);
 const preview_scale = ref(
 	"$[scale.x=1.3 🍮]\n$[scale.x=1.5,y=3 🍮]\n$[scale.y=0.3 🍮]",
 );

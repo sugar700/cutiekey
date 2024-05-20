@@ -16,6 +16,7 @@ import MkCode from '@/components/MkCode.vue';
 import MkCodeInline from '@/components/MkCodeInline.vue';
 import MkGoogle from '@/components/MkGoogle.vue';
 import MkSparkle from '@/components/MkSparkle.vue';
+import CkFollowMouse from '@/components/CkFollowMouse.vue';
 import MkA from '@/components/global/MkA.vue';
 import { host } from '@/config.js';
 import { defaultStore } from '@/store.js';
@@ -230,6 +231,15 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 					case 'rotate': {
 						const degrees = safeParseFloat(token.props.args.deg) ?? 90;
 						style = `transform: rotate(${degrees}deg); transform-origin: center center;`;
+						break;
+					}
+          case 'followmouse': {
+						if (!defaultStore.state.advancedMfm) break;
+            return h(CkFollowMouse, {
+              x : token.props.args.x ?? false,
+              y : token.props.args.y ?? false,
+              speed : token.props.args.speed ?? 0.1
+            }, genEl(token.children, scale));
 						break;
 					}
 					case 'position': {

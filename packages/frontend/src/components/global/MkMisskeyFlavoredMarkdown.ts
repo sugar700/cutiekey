@@ -16,6 +16,7 @@ import MkCode from '@/components/MkCode.vue';
 import MkCodeInline from '@/components/MkCodeInline.vue';
 import MkGoogle from '@/components/MkGoogle.vue';
 import MkSparkle from '@/components/MkSparkle.vue';
+import CkFollowMouse from '@/components/CkFollowMouse.vue';
 import MkA from '@/components/global/MkA.vue';
 import { host } from '@/config.js';
 import { defaultStore } from '@/store.js';
@@ -245,6 +246,26 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 						style = `transform: rotate(${degrees}deg); transform-origin: center center;`;
 						break;
 					}
+          case 'followmouse': {
+            //Make sure advanced MFM is on and that reduced motion is off
+						if (!defaultStore.state.advancedMfm || !defaultStore.state.animation) break;
+
+            let x = (!!token.props.args.x) ?? false
+            let y = (!!token.props.args.y) ?? false
+
+            if (!x && !y) {
+              x = true;
+              y = true;
+            }
+
+						return h(CkFollowMouse, {
+							x : x,
+							y : y,
+							speed : validTime(token.props.args.speed) ?? "0.1s",
+							rotateByVelocity : (!!token.props.args.rotateByVelocity) ?? false
+						}, genEl(token.children, scale));
+						break;
+					}
 					case 'position': {
 						if (!defaultStore.state.advancedMfm) break;
 						const x = safeParseFloat(token.props.args.x) ?? 0;
@@ -252,6 +273,22 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 						style = `transform: translateX(${x}em) translateY(${y}em);`;
 						break;
 					}
+          case "crop": {
+            const top = Number.parseFloat(
+              (token.props.args.top ?? "0").toString(),
+            );
+            const right = Number.parseFloat(
+              (token.props.args.right ?? "0").toString(),
+            );
+            const bottom = Number.parseFloat(
+              (token.props.args.bottom ?? "0").toString(),
+            );
+            const left = Number.parseFloat(
+              (token.props.args.left ?? "0").toString(),
+            );
+            style = `clip-path: inset(${top}% ${right}% ${bottom}% ${left}%);`;
+            break;
+          }
 					case 'scale': {
 						if (!defaultStore.state.advancedMfm) {
 							style = '';

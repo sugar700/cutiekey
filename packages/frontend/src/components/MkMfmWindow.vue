@@ -314,6 +314,18 @@
 						</div>
 					</div>
 				</div>
+    		    <div class="section _block" style="overflow: hidden">
+					<div class="title">{{ i18n.ts._mfm.followMouse }}</div>
+          <MkInfo warn>{{  i18n.ts._mfm.cutiekeyWontFederateWarning }}</MkInfo>
+          <br/>
+					<div class="content">
+						<p>{{ i18n.ts._mfm.followMouseDescription }}</p>
+						<div class="preview">
+							<Mfm :text="preview_followmouse" />
+							<MkTextarea v-model="preview_followmouse"><span>MFM</span></MkTextarea>
+						</div>
+					</div>
+				</div>
 				<div class="section _block">
 					<div class="title">{{ i18n.ts._mfm.scale }}</div>
 					<div class="content">
@@ -365,6 +377,7 @@ import { ref } from 'vue';
 import MkWindow from '@/components/MkWindow.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import { i18n } from "@/i18n.js";
+import MkInfo from './MkInfo.vue';
 
 const emit = defineEmits<{
 	(ev: 'closed'): void;
@@ -432,6 +445,7 @@ const preview_rotate = ref(
 	"$[rotate 🍮]\n$[rotate.deg=45 🍮]\n$[rotate.x,deg=45 Hello, world!]",
 );
 const preview_position = ref("$[position.y=-1 🍮]\n$[position.x=-1 🍮]");
+const preview_followmouse = ref("$[followmouse.x 🍮]\n$[followmouse.x,y,rotateByVelocity,speed=0.4 🍮]");
 const preview_scale = ref(
 	"$[scale.x=1.3 🍮]\n$[scale.x=1.5,y=3 🍮]\n$[scale.y=0.3 🍮]",
 );

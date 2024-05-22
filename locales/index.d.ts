@@ -9611,6 +9611,10 @@ export interface Locale extends ILocale {
     };
     "_mfm": {
         /**
+         * This is a Cutiekey feature meaning it wont display properly on most other fedi softwares
+         */
+        "cutiekeyWontFederateWarning": string;
+        /**
          * MFM is a markup language used on Misskey, Cutiekey, Firefish, Akkoma, and more that can be used in many places. Here you can view a list of all available MFM syntax.
          */
         "intro": string;
@@ -9866,6 +9870,14 @@ export interface Locale extends ILocale {
          * Move content by a specified amount.
          */
         "positionDescription": string;
+        /**
+         * Follow Mouse
+         */
+        "followMouse": string;
+        /**
+         * Content will follow the mouse. On mobile it will follow wherever the user taps.
+         */
+        "followMouseDescription": string;
         /**
          * Scale
          */

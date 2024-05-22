@@ -2551,6 +2551,8 @@ _mfm:
   scaleDescription: "Scale content by a specified amount."
   foreground: "Foreground color"
   foregroundDescription: "Change the foreground color of text."
+  fade: 'Fade'
+  fadeDescription: 'Fade text in and out.'
   background: "Background color"
   backgroundDescription: "Change the background color of text."
   plain: "Plain"

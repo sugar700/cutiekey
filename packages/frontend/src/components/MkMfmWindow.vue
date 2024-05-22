@@ -346,6 +346,16 @@
 						</div>
 					</div>
 				</div>
+        <div class="section _block">
+          <div class="title">{{ i18n.ts._mfm.fade }}</div>
+          <div class="content">
+            <p>{{ i18n.ts._mfm.fadeDescription }}</p>
+            <div class="preview">
+              <Mfm :text="preview_fade" />
+              <MkTextarea v-model="preview_fade"><span>MFM</span></MkTextarea>
+            </div>
+          </div>
+        </div>
 				<div class="section _block">
 					<div class="title">{{ i18n.ts._mfm.foreground }}</div>
 					<div class="content">
@@ -467,6 +477,7 @@ const preview_bg = ref("$[bg.color=31748f Background color]");
 const preview_plain = ref(
 	"<plain>**bold** @mention #hashtag `code` $[x2 🍮]</plain>",
 );
+const preview_fade = ref(`$[fade 🍮] $[fade.out 🍮] $[fade.speed=3s 🍮] $[fade.delay=3s 🍮]`);
 </script>
 
 <style lang="scss" scoped>

@@ -9903,6 +9903,14 @@ export interface Locale extends ILocale {
          */
         "foregroundDescription": string;
         /**
+         * Fade
+         */
+        "fade": string;
+        /**
+         * Fade text in and out.
+         */
+        "fadeDescription": string;
+        /**
          * Background color
          */
         "background": string;

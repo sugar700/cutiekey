@@ -9879,6 +9879,14 @@ export interface Locale extends ILocale {
          */
         "followMouseDescription": string;
         /**
+         * Crop
+         */
+        "crop": string;
+        /**
+         * Crop content.
+         */
+        "cropDescription": string;
+        /**
          * Scale
          */
         "scale": string;

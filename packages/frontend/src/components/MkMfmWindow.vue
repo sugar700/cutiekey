@@ -450,7 +450,7 @@ const preview_bg = ref("$[bg.color=31748f Background color]");
 const preview_plain = ref(
 	"<plain>**bold** @mention #hashtag `code` $[x2 🍮]</plain>",
 );
-const preview_fade = ref(`$[fade ${i18n.ts._mfm.dummy}]`);
+const preview_fade = ref(`$[fade 🍮] $[fade.out 🍮] $[fade.speed=3s 🍮] $[fade.delay=3s 🍮]`);
 </script>
 
 <style lang="scss" scoped>

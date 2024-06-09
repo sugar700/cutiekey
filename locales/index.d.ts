@@ -1677,7 +1677,7 @@ export interface Locale extends ILocale {
      */
     "enableServiceworker": string;
     /**
-     * List one username per line
+     * List one username per line. Use "*@instance.com" to specify all users of an instance
      */
     "antennaUsersDescription": string;
     /**
@@ -2769,6 +2769,10 @@ export interface Locale extends ILocale {
      * Select the types of notification to display.
      */
     "notificationSettingDesc": string;
+    /**
+     * Enable favicon notification dot
+     */
+    "enableFaviconNotificationDot": string;
     /**
      * Use global settings
      */
@@ -7115,7 +7119,7 @@ export interface Locale extends ILocale {
     };
     "_aboutMisskey": {
         /**
-         * Cutiekey is open-source software based on Misskey which has been in developed since 2014 by syuilo.
+         * Cutiekey is an open-source microblogging server forked from Sharkey which has been developed since 2023.
          */
         "about": string;
         /**
@@ -9611,7 +9615,11 @@ export interface Locale extends ILocale {
     };
     "_mfm": {
         /**
-         * MFM is a markup language used on Misskey, Cutiekey, Firefish, Akkoma, and more that can be used in many places. Here you can view a list of all available MFM syntax.
+         * This is not a widespread feature, it may not display properly on most other fedi software, including other Misskey forks
+         */
+        "uncommonFeature": string;
+        /**
+         * MFM is a markup language used on Misskey, Cutiekey, Sharkey, Firefish, Akkoma, and more that can be used in many places. Here you can view a list of all available MFM syntax.
          */
         "intro": string;
         /**
@@ -9867,6 +9875,22 @@ export interface Locale extends ILocale {
          */
         "positionDescription": string;
         /**
+         * Crop
+         */
+        "crop": string;
+        /**
+         * Crop content.
+         */
+        "cropDescription": string;
+        /**
+         * Follow Mouse
+         */
+        "followMouse": string;
+        /**
+         * Content will follow the mouse. On mobile it will follow wherever the user taps.
+         */
+        "followMouseDescription": string;
+        /**
          * Scale
          */
         "scale": string;
@@ -9882,6 +9906,14 @@ export interface Locale extends ILocale {
          * Change the foreground color of text.
          */
         "foregroundDescription": string;
+        /**
+         * Fade
+         */
+        "fade": string;
+        /**
+         * Fade text in and out.
+         */
+        "fadeDescription": string;
         /**
          * Background color
          */

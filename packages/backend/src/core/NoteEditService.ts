@@ -299,6 +299,10 @@ export class NoteEditService implements OnApplicationShutdown {
 		}
 
 		if (data.renote) {
+			if (data.renote.id === oldnote.id) {
+				throw new Error("A note can't renote itself");
+			}
+
 			switch (data.renote.visibility) {
 				case 'public':
 					// public noteは無条件にrenote可能
@@ -697,6 +701,24 @@ export class NoteEditService implements OnApplicationShutdown {
 					// フォロワーに配送
 					if (['public', 'home', 'followers'].includes(note.visibility)) {
 						dm.addFollowersRecipe();
+					}
+
+					if (['public', 'home'].includes(note.visibility)) {
+						// Send edit event to all users who replied to,
+						// renoted a post or reacted to a note.
+						const noteId = note.id;
+						const users = await this.usersRepository.createQueryBuilder()
+							.where(
+								'id IN (SELECT "userId" FROM note WHERE "replyId" = :noteId OR "renoteId" = :noteId UNION SELECT "userId" FROM note_reaction WHERE "noteId" = :noteId)',
+								{ noteId },
+							)
+							.andWhere('host IS NOT NULL')
+							.getMany();
+						for (const u of users) {
+							// User was verified to be remote by checking
+							// whether host IS NOT NULL in SQL query.
+							dm.addDirectRecipe(u as MiRemoteUser);
+						}
 					}
 
 					if (['public'].includes(note.visibility)) {

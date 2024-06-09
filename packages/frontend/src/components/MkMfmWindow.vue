@@ -304,6 +304,16 @@
 						</div>
 					</div>
 				</div>
+        <div class="section _block">
+					<div class="title">{{ i18n.ts._mfm.crop }}</div>
+					<div class="content">
+						<p>{{ i18n.ts._mfm.cropDescription }}</p>
+						<div class="preview">
+							<Mfm :text="preview_crop" />
+							<MkTextarea v-model="preview_crop"><span>MFM</span></MkTextarea>
+						</div>
+					</div>
+				</div>
 				<div class="section _block">
 					<div class="title">{{ i18n.ts._mfm.crop }}</div>
 					<div class="content">
@@ -346,6 +356,16 @@
 						</div>
 					</div>
 				</div>
+        <div class="section _block">
+          <div class="title">{{ i18n.ts._mfm.fade }}</div>
+          <div class="content">
+            <p>{{ i18n.ts._mfm.fadeDescription }}</p>
+            <div class="preview">
+              <Mfm :text="preview_fade" />
+              <MkTextarea v-model="preview_fade"><span>MFM</span></MkTextarea>
+            </div>
+          </div>
+        </div>
 				<div class="section _block">
 					<div class="title">{{ i18n.ts._mfm.fade }}</div>
 					<div class="content">

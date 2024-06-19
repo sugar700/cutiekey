@@ -13,7 +13,7 @@ import type { KEYWORD } from 'color-convert/conversions.js';
 
 @Injectable()
 export class LoggerService {
-  private syslogClient?: SyslogPro.RFC5424
+  private syslogClient?: SyslogPro.RFC5424;
 
 	constructor(
     @Inject(DI.config)
